@@ -111,10 +111,20 @@
             },
             (error) => {
                 status.style.color = "red";
-                if (error.code === error.PERMISSION_DENIED) {
-                    status.innerHTML = "Akses ditolak. Gagal memvalidasi jaringan lokal.";
-                } else {
-                    status.innerHTML = "Terjadi kesalahan jaringan atau sinyal GPS lemah.";
+                // Kode edukatif untuk mendeteksi letak kegagalan sensor HP Anda
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        status.innerHTML = "Eror: Anda memblokir izin lokasi. Silakan reset izin di ikon gembok browser.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        status.innerHTML = "Eror: Satelit GPS tidak terdeteksi. Coba uji di dekat jendela atau luar ruangan.";
+                        break;
+                    case error.TIMEOUT:
+                        status.innerHTML = "Eror: Waktu tunggu habis sebelum GPS HP berhasil mengunci koordinat presisi.";
+                        break;
+                    default:
+                        status.innerHTML = "Eror: Terjadi kesalahan tidak diketahui pada sensor lokasi.";
+                        break;
                 }
             },
             {
